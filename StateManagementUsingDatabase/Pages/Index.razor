@@ -1,0 +1,41 @@
+﻿@page "/"
+@using StateManagementUsingDatabase.Data
+@inject IProductService ProductService
+<div class="container">
+    <div class="row">
+        <div class="card">
+            <div class="card-header">Product Count: @ProductService.GetProductCount().Result </div>
+            <div class="card-body" style="max-height:50vh; overflow-y:scroll;">
+                @if ( ProductService.GetProductCount().Result > 0)
+                {
+                    foreach (var item in ProductService.GetAllProducts().Result)
+                    {
+                        <div class="col-auto m-2">
+                            <div class="card">
+                                <div class="card-header">@item.Name</div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+        
+    </div>
+    <div class="row col-auto card mt-5">
+        <div class="form-group">
+            <label class="form-label"> Name</label>
+            <InputText @bind-Value="Product.Name"></InputText>
+            <button class="mt-2 btn btn-primary" @onclick="AddProduct">Add Product</button>
+        </div>
+    </div>
+    
+</div>
+@code {
+    public Product Product { get; set; } = new();
+    private async void AddProduct()
+    {
+        await ProductService.AddProduct(Product);
+        Product = new();
+    }
+}
+
